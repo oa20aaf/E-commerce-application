@@ -192,7 +192,7 @@ const products = [
         countInStock: 4,
         rating: 4,
         numReview: 6,
-      },
+      }
 ]
 
 module.exports = products;

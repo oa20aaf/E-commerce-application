@@ -21,14 +21,18 @@ app.get("/api/products/:id", (req, res) => {
    res.json(product);
 });
 
+
+
+
+
+const databaseSeeder = require('./databaseSeeder');
+//database seeder routes
+app.use("/api/seed", databaseSeeder);
 app.listen(PORT || 9000, () => {  
     console.log(`server listening on port ${PORT}`);
 });
 
 
 
-//olamideadeniyi02
-//QvUJ2WmbEPc56FsC
-//Your current IP address (82.3.6.235)
-//mongodb+srv://olamideadeniyi02:QvUJ2WmbEPc56FsC@cluster0.gkfka.mongodb.net/REACT_NODE-APP
+
 

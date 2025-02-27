@@ -5,7 +5,7 @@ const users = [
         email: "admin@node.com",
         password: bcrypt.hashSync("123456",10),
         isAdmin: true,
-    }
+    },
 
     {
         name: "User",
@@ -14,4 +14,4 @@ const users = [
         isAdmin: true,
     }
 ]
-module.exports =users;
+module.exports = users;
