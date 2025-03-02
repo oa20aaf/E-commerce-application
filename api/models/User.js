@@ -12,4 +12,12 @@ const userSchema = new mongoose.Schema({
     },
 }, {timestamps: true})
 
+
+//validate password match or not
+userSchema.methods.matchPassword = async function(enteredPassword){
+    return await bcrpyt.compare(enteredPassword, this.password)
+}
+
+
+
 module.exports = mongoose.model("User",userSchema)
