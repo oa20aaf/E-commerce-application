@@ -18,6 +18,12 @@ userSchema.methods.matchPassword = async function(enteredPassword){
     return await bcrpyt.compare(enteredPassword, this.password)
 }
 
-
-
+// resgister password hash and save
+userSchema.pre("save", async function(next){
+    if(!this.isModified("password")){
+        next()
+    }
+    const salt = await bcrpyt.genSalt(10);
+    this.password = await bcrpyt.hash(this.password, salt)
+})
 module.exports = mongoose.model("User",userSchema)
