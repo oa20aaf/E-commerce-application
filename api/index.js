@@ -28,6 +28,7 @@ app.get("/api/products/:id", (req, res) => {
 const databaseSeeder = require('./databaseSeeder');
 const userRoute = require('./routes/User');
 const productRoute = require('./routes/Product');
+const orderRoute = require("./routes/Order");
 //database seeder routes
 app.use("/api/seed", databaseSeeder);
 app.use(express.json());
@@ -37,6 +38,9 @@ app.use("/api/users", userRoute);
 
 //Products routes
 app.use("/api/products", productRoute);
+
+//Orders routes
+app.use("/api/Orders", orderRoute);
 
 app.listen(PORT || 9000, () => {  
     console.log(`server listening on port ${PORT}`);
