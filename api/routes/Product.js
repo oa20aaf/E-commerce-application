@@ -18,9 +18,9 @@ productRoute.get(
         const product = await Product.findById(req.params.id);
         if (product) {
             res.json(product);
-        } else {
-            res.status(404).json({ message: 'Product not found' });
-        }
-    })
+       } else {
+           res.status(404).json({ message: 'Product not found' });
+       }
+   })
 );
 module.exports = productRoute;
