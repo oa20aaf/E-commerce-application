@@ -1,88 +1,125 @@
-const express =require('express');
+const express = require("express");
 const orderRoute = express.Router();
-const protect = require('../middleware/Auth');
-const Order = require('../models/Order');
-const asyncHandler = require('express-async-handler');
+const protect = require("../middleware/Auth");
+const Order = require("../models/Order");
+const asyncHandler = require("express-async-handler");
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+
+// 🛒 Create an Order & Generate PaymentIntent
 orderRoute.post(
-    '/',
-    protect,
-    asyncHandler(async(req,res)=>{
-        const {
-            orderItems,
-            shippingAddress,
-            paymentMethod,
-            itemsPrice,
-            taxPrice,
-            shippingPrice,
-            totalPrice,
-            price,
-        } = req.body;
-        if(orderItems && orderItems.length === 0){
-            res.status(400);
-            throw new Error('No order items found !');
-        }else{
-         const order = new Order({
-             orderItems,
-             user: req.user._id,
-             shippingAddress,
-             paymentMethod,
-             itemsPrice,
-             taxPrice,
-             shippingPrice,
-             totalPrice,
-             price,
-             user: req.user._id,
-         });
-         const createdOrder = await order.save();
-         res.status(201).json(createdOrder);
-                 }
-                }));
-//order payment route
-orderRoute.put(
-    '/:id/payment',
-    protect,
-    asyncHandler(async(req,res)=>{
-        const order = await Order.findById(req.params.id);
-        if(order){
-            order.isPaid = true;
-            order.paidAt = Date.now();
-            order.paymentResult = {
-                id:req.body.id,
-                status:req.body.status,
-                updated_time:req.body.updated_time,
-                email_address:req.body.email_address,
-            };
-            const updatedOrder = await order.save();
-            res.json(updatedOrder);
-        }else{
-            res.status(404);
-            throw new Error('Order not found');
-        }
-    })
-);
-// get all the orders
-orderRoute.get(
-    '/',
-    protect,
-    asyncHandler(async(req,res)=>{
-        const orders = await Order.find({user:req.user._id}) .sort({_id:-1})
-        if (orders){
-            res.status(200).json(orders);
-        }
-        else{
-            res.status(404);
-            throw new Error('No orders found');
-        }
-    })
-);
-// get one order by id
-orderRoute.get("/:id",protect,asyncHandler(async(req,res)=>{
-    const order = await Order.findById(req.params.id).populate("user","email");
-    if(order){
-        res.status(200).json(order);
-    }else{
-        res.status(404);
-        throw new Error('Order not found');
+  "/",
+  protect,
+  asyncHandler(async (req, res) => {
+    const {
+      orderItems,
+      shippingAddress,
+      itemsPrice,
+      taxPrice,
+      shippingPrice,
+      totalPrice,
+    } = req.body;
+
+    if (!orderItems || orderItems.length === 0) {
+      res.status(400);
+      throw new Error("No order items found!");
     }
-}));
+
+    // Validate shipping address
+    if (
+      !shippingAddress ||
+      !shippingAddress.address ||
+      !shippingAddress.city ||
+      !shippingAddress.country
+    ) {
+      res.status(400);
+      throw new Error("Shipping address is required.");
+    }
+
+    // Create a new order with user-provided shipping address
+    const order = new Order({
+      orderItems,
+      user: req.user._id,
+      shippingAddress,
+      itemsPrice,
+      taxPrice,
+      shippingPrice,
+      totalPrice,
+      isPaid: false,
+    });
+
+    const createdOrder = await order.save();
+
+    // Generate Stripe PaymentIntent
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: Math.round(totalPrice * 100),
+      currency: "gbp",
+      automatic_payment_methods: { enabled: true },
+      metadata: { orderId: createdOrder._id.toString() },
+    });
+
+    // Store PaymentIntent ID in order
+    createdOrder.paymentIntentId = paymentIntent.id;
+    await createdOrder.save();
+
+    res.status(201).json({
+      orderId: createdOrder._id,
+      clientSecret: paymentIntent.client_secret,
+    });
+  })
+);
+
+// ✅ Confirm Payment & Update Order
+orderRoute.post(
+  "/confirm-payment",
+  protect,
+  asyncHandler(async (req, res) => {
+    const { paymentIntentId } = req.body;
+
+    const order = await Order.findOne({ paymentIntentId });
+
+    if (!order) {
+      res.status(404);
+      throw new Error("Order not found");
+    }
+
+    // Retrieve payment status from Stripe
+    const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
+
+    if (paymentIntent.status === "succeeded") {
+      order.isPaid = true;
+      order.paidAt = new Date();
+      await order.save();
+      res.json({ message: "Payment successful", order });
+    } else {
+      res.status(400);
+      throw new Error("Payment not completed");
+    }
+  })
+);
+
+// 📦 Get All Orders for a User
+orderRoute.get(
+  "/",
+  protect,
+  asyncHandler(async (req, res) => {
+    const orders = await Order.find({ user: req.user._id }).sort({ _id: -1 });
+    res.status(200).json(orders);
+  })
+);
+
+// 📦 Get Order by ID (Includes Shipping Address)
+orderRoute.get(
+  "/:id",
+  protect,
+  asyncHandler(async (req, res) => {
+    const order = await Order.findById(req.params.id).populate("user", "email");
+    if (order) {
+      res.status(200).json(order);
+    } else {
+      res.status(404);
+      throw new Error("Order not found");
+    }
+  })
+);
+
 module.exports = orderRoute;
