@@ -15,7 +15,6 @@ import "react-toastify/dist/ReactToastify.css";
 import { useDispatch } from "react-redux";
 import { clearCart } from "../Redux/Actions/Cart";
 import { BASE_URL } from "../Redux/Constants/BASE_URL";
-import axios from "axios";
 
 const stripePromise = loadStripe(
   "pk_test_51R8qBs4QQWLIOTQOZwn0jqUtHHRnnDkeDFMQJ66rPaUhAWVqzb5ZMsu1BBmGALRtQ3wGfVT2EzcbvVTKSUpE9nVB00wGS05iX7"
@@ -28,7 +27,6 @@ const CheckoutForm = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const token = JSON.parse(localStorage.getItem("userInfo"))?.token;
-  const userInfo = JSON.parse(localStorage.getItem("userInfo")) || {};
 
   const { cartItems, totalPrice } = location.state || {
     cartItems: [],
@@ -156,18 +154,6 @@ const CheckoutForm = () => {
 
           <div>
             <h2 className="text-2xl font-bold mb-4">Checkout</h2>
-            <input
-              type="email"
-              className="w-full border p-2 rounded-md mb-4"
-              value={userInfo.email || ""}
-              readOnly
-            />
-            <input
-              type="text"
-              className="w-full border p-2 rounded-md mb-4"
-              value={userInfo.name || ""}
-              readOnly
-            />
             <CardNumberElement className="w-full border p-2 rounded-md mb-4" />
             <div className="grid grid-cols-2 gap-4">
               <CardExpiryElement className="border p-2 rounded-md" />

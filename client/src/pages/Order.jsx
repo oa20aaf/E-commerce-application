@@ -70,7 +70,7 @@ const Order = () => {
                       {order.paymentIntentId}
                     </td>
                     <td className="p-4 font-semibold">
-                      ${order.totalPrice.toFixed(2)} USD
+                      £{order.totalPrice.toFixed(2)} GBP
                     </td>
                     <td className="p-4 flex items-center text-green-500 font-medium">
                       <span className="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
@@ -109,7 +109,7 @@ const Order = () => {
                 <strong>Quantity:</strong> {selectedOrder.orderItems[0].qty}
               </p>
               <p>
-                <strong>Total Price:</strong> ${selectedOrder.totalPrice} USD
+                <strong>Total Price:</strong> £{selectedOrder.totalPrice}GBP
               </p>
               <p>
                 <strong>Shipping Address:</strong>{" "}

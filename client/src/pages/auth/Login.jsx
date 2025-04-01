@@ -1,6 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import Layout from "../../Layouts/Layouts";
 import { userLoginAction } from "../../Redux/Actions/User";
+import { Preloader } from "../../Components/Preloader";
 import { useState, useEffect } from "react";
 
 export default function Login() {
@@ -28,24 +29,7 @@ export default function Login() {
     <Layout>
       <div className="flex justify-center items-center min-h-screen bg-white">
         <div className="bg-white shadow-lg rounded-lg p-6 w-full max-w-sm">
-          {submitted && loading && (
-            <div
-              className="fixed inset-0 flex items-center justify-center bg-white z-50"
-              id="preloader"
-            >
-              <div className="text-4xl font-bold flex space-x-2 text-blue-600">
-                <span className="animate-bounce delay-75">A</span>
-                <span className="animate-bounce delay-100">f</span>
-                <span className="animate-bounce delay-150">r</span>
-                <span className="animate-bounce delay-200">o</span>
-                <span className="w-2"></span>
-                <span className="animate-bounce delay-250">S</span>
-                <span className="animate-bounce delay-300">h</span>
-                <span className="animate-bounce delay-350">o</span>
-                <span className="animate-bounce delay-400">p</span>
-              </div>
-            </div>
-          )}
+          {submitted && loading && <Preloader />}
           {error && <h1 className="text-center text-red-600">{error}</h1>}
           <form className="space-y-5" onSubmit={submitHandler}>
             <div>

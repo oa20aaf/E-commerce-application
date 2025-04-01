@@ -1,0 +1,6 @@
+# Ignore environment variables
+.env
+api/.env
+client/.env.local
+client/.env.development
+client/.env.production

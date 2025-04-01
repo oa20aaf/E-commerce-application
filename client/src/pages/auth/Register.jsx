@@ -1,9 +1,14 @@
 import Layout from "../../Layouts/Layouts";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
 import { Preloader } from "../../Components/Preloader";
+import { userRegisterAction } from "../../Redux/Actions/User";
+import { useNavigate, Link } from "react-router-dom";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function Register() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
@@ -11,6 +16,15 @@ export default function Register() {
   const userRegisterReducer = useSelector((state) => state.userRegisterReducer);
   const { loading, error, userInfo } = userRegisterReducer;
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (userInfo) {
+      toast.success("Registration successful!");
+      navigate("/");
+    } else if (error) {
+      toast.error(error || "Registration failed!");
+    }
+  }, [userInfo, error]);
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -26,7 +40,6 @@ export default function Register() {
         >
           <h2 className="text-2xl font-semibold text-center mb-4">Register</h2>
 
-          {error && <p className="text-red-500 text-sm">{error}</p>}
           {loading && <Preloader />}
 
           <div className="mb-4">

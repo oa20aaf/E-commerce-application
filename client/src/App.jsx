@@ -10,7 +10,7 @@ import Home from "./pages/Home";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import Cart from "./pages/Cart";
-import Checkout from "./pages/CheckOut";
+import Checkout from "./pages/Checkout";
 import Order from "./pages/Order";
 import ProtectedRoute from "./Components/ProtectedRoute";
 import { ToastContainer } from "react-toastify";
