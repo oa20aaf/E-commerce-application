@@ -1,30 +1,18 @@
 import Layout from "../../Layouts/Layouts";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { toast } from "react-toastify";
 import { Preloader } from "../../Components/Preloader";
 import { userRegisterAction } from "../../Redux/Actions/User";
-import { useNavigate, Link } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function Register() {
-  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
 
   const userRegisterReducer = useSelector((state) => state.userRegisterReducer);
-  const { loading, error, userInfo } = userRegisterReducer;
+  const { loading } = userRegisterReducer;
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    if (userInfo) {
-      toast.success("Registration successful!");
-      navigate("/");
-    } else if (error) {
-      toast.error(error || "Registration failed!");
-    }
-  }, [userInfo, error]);
 
   const submitHandler = (e) => {
     e.preventDefault();

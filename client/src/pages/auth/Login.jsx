@@ -1,8 +1,8 @@
 import { useDispatch, useSelector } from "react-redux";
 import Layout from "../../Layouts/Layouts";
 import { userLoginAction } from "../../Redux/Actions/User";
-import { Preloader } from "../../Components/Preloader";
 import { useState, useEffect } from "react";
+import { Preloader } from "../../Components/Preloader";
 
 export default function Login() {
   const [email, setEmail] = useState("");
