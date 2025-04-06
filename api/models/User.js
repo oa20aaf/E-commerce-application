@@ -18,7 +18,7 @@ userSchema.methods.matchPassword = async function(enteredPassword){
     return await bcrpyt.compare(enteredPassword, this.password)
 }
 
-// resgister password hash and save
+// register password hash and save
 userSchema.pre("save", async function(next){
     if(!this.isModified("password")){
         next()

@@ -28,7 +28,7 @@ export default function Register() {
         >
           <h2 className="text-2xl font-semibold text-center mb-4">Register</h2>
 
-          {loading && <Preloader />}
+          
 
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-medium mb-1">
