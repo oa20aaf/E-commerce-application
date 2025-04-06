@@ -33,4 +33,8 @@ contactRoute.post(
   })
 );
 
+<<<<<<< HEAD
 module.exports = contactRoute;
+=======
+module.exports = contactRoute;
+>>>>>>> 411bcb17893dbbba8021310f8ee527ed4ceaf317

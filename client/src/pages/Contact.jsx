@@ -160,4 +160,8 @@ const Contact = () => {
   );
 };
 
+<<<<<<< HEAD
 export default Contact;
+=======
+export default Contact;
+>>>>>>> 411bcb17893dbbba8021310f8ee527ed4ceaf317
