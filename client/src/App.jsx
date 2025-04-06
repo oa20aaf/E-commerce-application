@@ -14,6 +14,8 @@ import Checkout from "./pages/Checkout";
 import Order from "./pages/Order";
 import ProtectedRoute from "./Components/ProtectedRoute";
 import { ToastContainer } from "react-toastify";
+import Contact from "./pages/Contact";
+import About from "./pages/About";
 import "react-toastify/dist/ReactToastify.css";
 
 function App() {
@@ -39,6 +41,8 @@ function App() {
             element={userInfo ? <Navigate to="/" /> : <Register />}
           />
 
+          <Route exact path="/contact" element={<Contact />} />
+          <Route exact path="/about" element={<About />} />
           {/* Protected Routes */}
           <Route
             exact
